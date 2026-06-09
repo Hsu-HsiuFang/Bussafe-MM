@@ -5,7 +5,7 @@
  * Now sends route/alert data to the backend.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Contact } from '../types';
 import PageLayout from '../components/PageLayout';
@@ -27,24 +27,47 @@ const AlertConfirmationPage: React.FC<AlertConfirmationPageProps> = ({
   const [alertTimestamp, setAlertTimestamp] = useState('');
   const [alertStatus, setAlertStatus] = useState<'sending' | 'sent' | 'error'>('sending');
 
-  useEffect(() => {
-    const now = new Date();
-    setAlertTimestamp(now.toLocaleString('en-US', {
-      month: 'long', day: 'numeric', year: 'numeric',
-      hour: 'numeric', minute: '2-digit', hour12: true
-    }));
+  const hasActivatedRef = useRef(false);
 
-    const activate = async () => {
-      const result = await onActivateAlert('Emergency Route', 'emergency', undefined, undefined, 'Silent alert activated from app');
-      setAlertStatus(result.success ? 'sent' : 'error');
-    };
+useEffect(() => {
+  if (hasActivatedRef.current) return;
+  hasActivatedRef.current = true;
 
-    const contentTimer = setTimeout(() => setShowContent(true), 500);
-    const locationTimer = setTimeout(() => setLocationShared(true), 1500);
-    activate();
+  const now = new Date();
 
-    return () => { clearTimeout(contentTimer); clearTimeout(locationTimer); };
-  }, []);
+  setAlertTimestamp(
+    now.toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+  );
+
+  const activate = async () => {
+    const result = await onActivateAlert(
+      'Emergency Route',
+      'emergency',
+      undefined,
+      undefined,
+      'Silent alert activated from app'
+    );
+
+    setAlertStatus(result.success ? 'sent' : 'error');
+  };
+
+  const contentTimer = setTimeout(() => setShowContent(true), 500);
+  const locationTimer = setTimeout(() => setLocationShared(true), 1500);
+
+  activate();
+
+  return () => {
+    clearTimeout(contentTimer);
+    clearTimeout(locationTimer);
+  };
+}, [onActivateAlert]);
 
   return (
     <PageLayout title="Alert Activated">
