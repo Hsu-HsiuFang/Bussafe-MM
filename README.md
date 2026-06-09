@@ -9,7 +9,8 @@ A safety application for Myanmar bus passengers. Send safety alerts, save truste
 | **Frontend** | React 19 + TypeScript + Vite + Tailwind CSS 4 |
 | **Backend** | Python FastAPI |
 | **Database** | Supabase (PostgreSQL) |
-| **Deployment** | Vercel |
+| **Frontend Deployment** | Vercel |
+| **Backend Deployment** | Render |
 
 ## Project Structure
 

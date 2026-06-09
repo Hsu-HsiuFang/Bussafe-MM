@@ -30,10 +30,7 @@ const AlertConfirmationPage: React.FC<AlertConfirmationPageProps> = ({
   const hasActivatedRef = useRef(false);
 
 useEffect(() => {
-  if (hasActivatedRef.current) return;
-  hasActivatedRef.current = true;
-
-  const now = new Date();
+    const now = new Date();
 
   setAlertTimestamp(
     now.toLocaleString('en-US', {
@@ -45,6 +42,11 @@ useEffect(() => {
       hour12: true,
     })
   );
+const contentTimer = setTimeout(() => setShowContent(true), 500);
+  const locationTimer = setTimeout(() => setLocationShared(true), 1500);
+
+  if (!hasActivatedRef.current) {
+    hasActivatedRef.current = true;
 
   const activate = async () => {
     const result = await onActivateAlert(
@@ -57,11 +59,9 @@ useEffect(() => {
 
     setAlertStatus(result.success ? 'sent' : 'error');
   };
-
-  const contentTimer = setTimeout(() => setShowContent(true), 500);
-  const locationTimer = setTimeout(() => setLocationShared(true), 1500);
-
+  
   activate();
+}
 
   return () => {
     clearTimeout(contentTimer);
@@ -70,6 +70,7 @@ useEffect(() => {
 }, [onActivateAlert]);
 
   return (
+
     <PageLayout title="Alert Activated">
       <div className="text-center mb-8">
         <div className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-red-100 to-red-200 rounded-full mb-5 shadow-lg shadow-red-200/50 ${showContent ? 'animate-pulse-soft' : ''}`}>

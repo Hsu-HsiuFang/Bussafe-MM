@@ -8,7 +8,7 @@
  */
 
 // API base URL - defaults to localhost:8000 for local development
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 // ============================================
 // TYPES
